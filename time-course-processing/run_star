@@ -1,0 +1,18 @@
+#!/bin/bash
+read_pref=`echo $1 | cut -d'_' -f1-3`
+out_pref=`echo $1 | cut -d'_' -f2-3`
+
+STAR --runThreadN 8 --genomeDir ${GENOME_DIR} \
+	--readFilesIn _R1_001.fastq.gz _R2_001.fastq.gz \
+	--outSAMtype BAM SortedByCoordinate \
+	--readFilesPrefix "$read_pref" \
+	--readFilesCommand zcat \
+	--outFileNamePrefix star_output_second/"$out_pref" \
+	--outSAMattributes NH HI AS nM jM jI \
+	--outFilterMismatchNoverReadLmax  0.04\
+	--sjdbGTFfile ${GENOME_DIR}/MguttatusTOL_551_v5.0.gtf \
+	--outFilterIntronMotifs RemoveNoncanonical \
+	--chimSegmentMin 40 \
+	--outSAMmapqUnique 60 \
+	--twopassMode Basic \
+	--outSAMunmapped Within KeepPairs
